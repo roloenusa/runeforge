@@ -1,0 +1,73 @@
+<h2>Show character</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @character.name %>
+  </li>
+
+  <li>
+    <strong>Hp:</strong>
+    <%= @character.hp %>
+  </li>
+
+  <li>
+    <strong>Bloodied:</strong>
+    <%= @character.bloodied %>
+  </li>
+
+  <li>
+    <strong>Ac:</strong>
+    <%= @character.ac %>
+  </li>
+
+  <li>
+    <strong>Fort:</strong>
+    <%= @character.fort %>
+  </li>
+
+  <li>
+    <strong>Ref:</strong>
+    <%= @character.ref %>
+  </li>
+
+  <li>
+    <strong>Will:</strong>
+    <%= @character.will %>
+  </li>
+
+  <li>
+    <strong>Str:</strong>
+    <%= @character.str %>
+  </li>
+
+  <li>
+    <strong>Con:</strong>
+    <%= @character.con %>
+  </li>
+
+  <li>
+    <strong>Dex:</strong>
+    <%= @character.dex %>
+  </li>
+
+  <li>
+    <strong>Int:</strong>
+    <%= @character.int %>
+  </li>
+
+  <li>
+    <strong>Wis:</strong>
+    <%= @character.wis %>
+  </li>
+
+  <li>
+    <strong>Cha:</strong>
+    <%= @character.cha %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: character_path(@conn, :edit, @character) %>
+<%= link "Back", to: character_path(@conn, :index) %>

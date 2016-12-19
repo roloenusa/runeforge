@@ -1,0 +1,89 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, :name, class: "control-label" %>
+    <%= text_input f, :name, class: "form-control" %>
+    <%= error_tag f, :name %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :hp, class: "control-label" %>
+    <%= number_input f, :hp, class: "form-control" %>
+    <%= error_tag f, :hp %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :bloodied, class: "control-label" %>
+    <%= number_input f, :bloodied, class: "form-control" %>
+    <%= error_tag f, :bloodied %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :ac, class: "control-label" %>
+    <%= number_input f, :ac, class: "form-control" %>
+    <%= error_tag f, :ac %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :fort, class: "control-label" %>
+    <%= number_input f, :fort, class: "form-control" %>
+    <%= error_tag f, :fort %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :ref, class: "control-label" %>
+    <%= number_input f, :ref, class: "form-control" %>
+    <%= error_tag f, :ref %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :will, class: "control-label" %>
+    <%= number_input f, :will, class: "form-control" %>
+    <%= error_tag f, :will %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :str, class: "control-label" %>
+    <%= number_input f, :str, class: "form-control" %>
+    <%= error_tag f, :str %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :con, class: "control-label" %>
+    <%= number_input f, :con, class: "form-control" %>
+    <%= error_tag f, :con %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :dex, class: "control-label" %>
+    <%= number_input f, :dex, class: "form-control" %>
+    <%= error_tag f, :dex %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :int, class: "control-label" %>
+    <%= number_input f, :int, class: "form-control" %>
+    <%= error_tag f, :int %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :wis, class: "control-label" %>
+    <%= number_input f, :wis, class: "form-control" %>
+    <%= error_tag f, :wis %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :cha, class: "control-label" %>
+    <%= number_input f, :cha, class: "form-control" %>
+    <%= error_tag f, :cha %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
+<% end %>

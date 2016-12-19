@@ -1,0 +1,71 @@
+mix phoenix.gen.html Character characters name:string hp:integer bloodied:integer ac:integer fort:integer ref:integer will:integer str:integer con:integer dex:integer int:integer wis:integer cha:integer
+
+defmodule Runeforge.Character do
+  use Runeforge.Web, :model
+
+  import Ecto.Query
+
+  @json_attrs [ :name,
+                :hp, :bloodied, :ac, :fort, :ref, :will,
+                :str, :con, :dex, :int, :wis, :cha
+              ]
+
+  schema "characters" do
+    field :name       # Defaults to type :string
+
+    field :hp,        :integer
+    field :bloodied,  :integer
+    field :ac,        :integer
+    field :fort,      :integer
+    field :ref,       :integer
+    field :will,      :integer
+
+    field :str,       :integer
+    field :con,       :integer
+    field :dex,       :integer
+    field :int,       :integer
+    field :wis,       :integer
+    field :cha,       :integer
+
+    timestamps
+  end
+
+  @required_fields ~w()
+  @optional_fields ~w()
+
+  def find_by_name(name) do
+    query = from c in Runeforge.Character,
+          where: c.name == ^name,
+         select: c
+    Runeforge.Repo.find(query)
+  end
+
+  def update(character, params) do
+    char = Map.merge(character, params)
+    Repo.update(char)
+      |> after_save(char)
+  end
+
+  def after_save(nil, char), do: {:error, :unable_to_save}
+  def after_save(:ok, char), do: {:ok, char}
+
+  def changeset(model, params \\ :empty) do
+    model
+    |> cast(params, @required_fields, @optional_fields)
+  end
+
+  @doc """
+  Get the attributes that need to be set on json.
+  """
+  def json_attrs, do: @json_attrs
+
+  defimpl Poison.Encoder, for: Runeforge.Character do
+
+
+    def encode(model, opts) do
+      model
+        |> Map.take(Runeforge.Character.json_attrs)
+        |> Poison.Encoder.encode(opts)
+    end
+  end
+end

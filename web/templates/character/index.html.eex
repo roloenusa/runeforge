@@ -1,0 +1,50 @@
+<h2>Listing characters</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Hp</th>
+      <th>Bloodied</th>
+      <th>Ac</th>
+      <th>Fort</th>
+      <th>Ref</th>
+      <th>Will</th>
+      <th>Str</th>
+      <th>Con</th>
+      <th>Dex</th>
+      <th>Int</th>
+      <th>Wis</th>
+      <th>Cha</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for character <- @characters do %>
+    <tr>
+      <td><%= character.name %></td>
+      <td><%= character.hp %></td>
+      <td><%= character.bloodied %></td>
+      <td><%= character.ac %></td>
+      <td><%= character.fort %></td>
+      <td><%= character.ref %></td>
+      <td><%= character.will %></td>
+      <td><%= character.str %></td>
+      <td><%= character.con %></td>
+      <td><%= character.dex %></td>
+      <td><%= character.int %></td>
+      <td><%= character.wis %></td>
+      <td><%= character.cha %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: character_path(@conn, :show, character), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: character_path(@conn, :edit, character), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: character_path(@conn, :delete, character), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New character", to: character_path(@conn, :new) %>
