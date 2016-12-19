@@ -20,6 +20,8 @@
 defmodule Runeforge.Character do
   use Runeforge.Web, :model
 
+  @derive {Poison.Encoder, only: [:name, :hp, :bloodied]}
+
   schema "characters" do
     field :name, :string
     field :hp, :integer

@@ -14,6 +14,9 @@ defmodule Runeforge do
       supervisor(Runeforge.Endpoint, []),
       # Start your own worker by calling: Runeforge.Worker.start_link(arg1, arg2, arg3)
       # worker(Runeforge.Worker, [arg1, arg2, arg3]),
+
+      # Initialize the board on launch.
+      worker(Runeforge.BoardServer, [[name: :board_server]])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
