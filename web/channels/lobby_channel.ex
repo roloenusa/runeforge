@@ -1,4 +1,4 @@
-defmodule Runforge.LobbyChannel do
+defmodule Runeforge.LobbyChannel do
   use Phoenix.Channel
 
   def join("lobby", _payload, socket) do

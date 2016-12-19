@@ -1,6 +1,8 @@
 defmodule Runeforge.UserSocket do
   use Phoenix.Socket
 
+  channel "lobby", Runeforge.LobbyChannel
+
   ## Channels
   # channel "room:*", Runeforge.RoomChannel
 
