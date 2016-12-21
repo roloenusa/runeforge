@@ -1,4 +1,6 @@
 defmodule Runeforge.BoardServer do
+  require Logger
+
   use GenServer
 
   alias Runeforge.Repo
@@ -10,15 +12,16 @@ defmodule Runeforge.BoardServer do
     {:ok, pid} = GenServer.start_link(__MODULE__, [], opts)
   end
 
-  # def new_bid(bid_params) do
-  #   GenServer.call(:auction_server, {:new_bid, bid_params})
-  # end
-
   # Server implementation
 
   def init([]) do
-    characters = Repo.all(Character)
-    {:ok, %{characters: characters}}
+    elements = Repo.all(Character)
+      |> Enum.reduce(%{}, fn(character, acc) ->
+          name = character.name
+          id = :crypto.hash(:sha, name) |> Base.encode32
+          Map.put(acc, id, %{character: character, pos: %{x: 0, y: 0}})
+        end)
+    {:ok, %{elements: elements}}
   end
 
   #####
@@ -29,23 +32,31 @@ defmodule Runeforge.BoardServer do
     GenServer.call(:board_server, {:get})
   end
 
-  # def handle_call({:new_bid, bid_params}, _from, bids) do
-  #   changeset = Bid.changeset(%Bid{}, bid_params)
-  #   case Repo.insert(changeset) do
-  #     {:ok, bid} ->
-  #       Auctioneer.Endpoint.broadcast! "bids:max", "change", Auctioneer.BidView.render("show.json", %{bid: bid})
-  #       {:reply, {:ok, bid}, [bid | bids]}
-  #     {:error, changeset} ->
-  #       {:reply, {:error, changeset}, bids}
-  #   end
-  # end
+  def update(payload) do
+    GenServer.call(:board_server, {:update, payload})
+  end
 
-  def handle_call({:get}, _from, map = %{characters: []}) do
+  #####
+  # Gen Server Calls
+  #####
+
+  def handle_call({:get}, _from, map = %{elements: []}) do
     {:reply, {:ok, []}, map}
   end
-  def handle_call({:get}, _from, map = %{characters: characters}) do
-    [head | _ ] = characters
-    {:reply, {:ok, head}, map}
+  def handle_call({:get}, _from, map = %{elements: elements}) do
+    {:reply, {:ok, elements}, map}
   end
 
+  def handle_call({:update, %{id: id, pos: pos}}, _from, map = %{elements: elements}) do
+    {_prev, elements} = Map.get_and_update(elements, id, fn(element) ->
+      cur = element
+      {cur, %{element | pos: pos}}
+    end)
+
+    {:reply, {:ok, elements}, %{map | elements: elements}}
+  end
+
+  #####
+  # Private functions.
+  #####
 end

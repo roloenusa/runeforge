@@ -10,6 +10,15 @@
   </div>
 </div>
 
-<div id="grid">
-  hello world
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3"><strong>Name</strong></div>
+    <div class="col-md-2"><strong>HP</strong></div>
+    <div class="col-md-2"><strong>Bloodied</strong></div>
+    <div class="col-md-2"><strong>PosX</strong></div>
+    <div class="col-md-2"><strong>PosY</strong></div>
+  </div>
+  <div id="grid" class="row">
+
+  </div>
 </div>

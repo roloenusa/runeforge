@@ -81,6 +81,46 @@ channel.on('new_message', payload => {
   list.prop({scrollTop: list.prop("scrollHeight")});
 });
 
+channel.on("board_state", payload => {
+    console.log("Payload: ", payload)
+
+    drawGrid(payload)
+});
+
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
+
+function drawGrid(payload) {
+  let grid = $("#grid");
+  grid.empty();
+
+  let chars = payload.elements
+  $.each(chars, function(id, elem){
+    console.log(elem.character.name);
+    grid.append(`<div id="${id}" class="row form-group"></div>`);
+    let div = $(`#${id}`);
+
+    div.append(`
+      <div class="col-md-3">${elem.character.name}</div>
+      <div class="col-md-2">${elem.character.hp}</div>
+      <div class="col-md-2">${elem.character.bloodied}</div>
+      <div class="col-md-2">
+        <input type="text" id="${id}_posX" value="${elem.pos.x}" class="form-control"/>
+      </div>
+      <div class="col-md-2">
+        <input type="text" id="${id}_posY" value="${elem.pos.y}" class="form-control"/>
+      </div>
+      <div class="col-md-1">
+        <button id="go_${id}">Go!</button>
+      </div>
+    `);
+
+    let button = $(`#go_${id}`)
+    button.click(payload => {
+      console.log("pushing payload: ", payload);
+      let pos_y = $(`#${id}_posY`).val();
+      channel.push('update', { id: id, name: "hello", pos: {x: elem.pos.x, y: pos_y} });
+    });
+  });
+}
