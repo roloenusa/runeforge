@@ -15,15 +15,16 @@ defmodule Runeforge.LobbyChannel do
     {:noreply, socket}
   end
 
-  def handle_in("update", payload, socket) do
+  def handle_in("move", payload, socket) do
     Logger.debug Poison.encode! payload
 
     {:ok, elements} = payload
       |> map_keys_to_atoms
-      |> Runeforge.BoardServer.update
+      |> Runeforge.BoardServer.move
 
     {:noreply, socket}
   end
+
 
   def map_keys_to_atoms(map) do
     Logger.debug Poison.encode! map

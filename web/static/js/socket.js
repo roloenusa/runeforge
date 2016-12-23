@@ -119,8 +119,9 @@ function drawGrid(payload) {
     let button = $(`#go_${id}`)
     button.click(payload => {
       console.log("pushing payload: ", payload);
+      let pos_x = $(`#${id}_posX`).val();
       let pos_y = $(`#${id}_posY`).val();
-      channel.push('update', { id: id, name: "hello", pos: {x: elem.pos.x, y: pos_y} });
+      channel.push('move', { id: id, name: "hello", pos: {x: pos_x, y: pos_y} });
     });
   });
 }
