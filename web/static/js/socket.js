@@ -83,13 +83,14 @@ channel.on('new_message', payload => {
 
 channel.on("board_state", payload => {
     console.log("Payload: ", payload)
-
     drawGrid(payload)
 });
 
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
+
+channel.push('board', {});
 
 function drawGrid(payload) {
   let grid = $("#grid");

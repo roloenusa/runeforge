@@ -8,10 +8,12 @@ defmodule Runeforge.LobbyChannel do
 
   def handle_in("new_message", payload, socket) do
     broadcast! socket, "new_message", payload
+    {:noreply, socket}
+  end
 
+  def handle_in("board", _payload, socket) do
     {:ok, elements} = Runeforge.BoardServer.get()
     broadcast! socket, "board_state", %{elements: elements}
-
     {:noreply, socket}
   end
 
