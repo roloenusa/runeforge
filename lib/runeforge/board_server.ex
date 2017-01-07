@@ -55,7 +55,7 @@ defmodule Runeforge.BoardServer do
       elements -> state = %{state | elements: elements}
     end
 
-    payload = %{name: "System", message: "#{elements[id].character.name} moved to #{Poison.encode! pos}"}
+    payload = %{name: "System", message: "Player: #{elements[id].character.name} moved to #{Poison.encode! pos}"}
     Runeforge.Endpoint.broadcast("lobby", "new_message", payload)
 
     {:reply, {:ok, elements}, state}
@@ -76,7 +76,6 @@ defmodule Runeforge.BoardServer do
   @doc """
   Update the position of the elements or return error.
   """
-  def update_position(element, _e, _id, _pos) when is_map(element), do: :error
   def update_position(:not_found, elements, id, pos) do
     {_prev, new_elements} = Map.get_and_update(elements, id, fn(element) ->
       new_element = move_to_tile(element, pos)
@@ -84,6 +83,7 @@ defmodule Runeforge.BoardServer do
     end)
     new_elements
   end
+  def update_position(element, _e, _id, _pos), do: :error
 
   @doc """
   Get the element at the position.
