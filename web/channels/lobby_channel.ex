@@ -16,7 +16,6 @@ defmodule Runeforge.LobbyChannel do
     broadcast! socket, "board_state", %{elements: elements}
     {:noreply, socket}
   end
-
   def handle_in("move", payload, socket) do
     Logger.debug Poison.encode! payload
 
