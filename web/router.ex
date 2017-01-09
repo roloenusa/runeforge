@@ -7,6 +7,7 @@ defmodule Runeforge.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Runeforge.Auth, repo: Runeforge.Repo
   end
 
   pipeline :api do
@@ -19,6 +20,11 @@ defmodule Runeforge.Router do
     get "/", PageController, :index
 
     resources "/characters", CharacterController
+
+    resources "/players", PlayerController do
+      get "/join", PlayerController, :join, as: :join
+      get "/leave", PlayerController, :leave, as: :leave
+    end
   end
 
   # Other scopes may use custom stacks.

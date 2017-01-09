@@ -1,7 +1,8 @@
 defmodule Runeforge.Endpoint do
   use Phoenix.Endpoint, otp_app: :runeforge
 
-  socket "/socket", Runeforge.UserSocket
+  # socket "/socket", Runeforge.UserSocket
+  socket "/socket", Runeforge.PlayerSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #

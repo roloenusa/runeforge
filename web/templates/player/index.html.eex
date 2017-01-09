@@ -1,3 +1,21 @@
+<%= if @player do %>
+  <h2><%= @player.name %></h2>
+  <%= link "Leave", to: player_leave_path(@conn, :leave, @player.id) %>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3"><strong>Name</strong></div>
+      <div class="col-md-2"><strong>HP</strong></div>
+      <div class="col-md-2"><strong>Bloodied</strong></div>
+      <div class="col-md-2"><strong>PosX</strong></div>
+      <div class="col-md-2"><strong>PosY</strong></div>
+    </div>
+    <div id="grid" class="row">
+
+    </div>
+  </div>
+<% end %>
+
 <h2>Listing players</h2>
 
 <table class="table">
@@ -14,6 +32,9 @@
       <td><%= player.name %></td>
 
       <td class="text-right">
+        <%= unless @player do %>
+        <%= link "Join", to: player_join_path(@conn, :join, player.id), class: "btn btn-default btn-xs" %>
+        <% end %>
         <%= link "Show", to: player_path(@conn, :show, player), class: "btn btn-default btn-xs" %>
         <%= link "Edit", to: player_path(@conn, :edit, player), class: "btn btn-default btn-xs" %>
         <%= link "Delete", to: player_path(@conn, :delete, player), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>

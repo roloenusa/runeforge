@@ -4,8 +4,9 @@ defmodule Runeforge.PlayerController do
   alias Runeforge.Player
 
   def index(conn, _params) do
+    player = get_session(conn, :player)
     players = Repo.all(Player)
-    render(conn, "index.html", players: players)
+    render(conn, "index.html", players: players, player: player)
   end
 
   def new(conn, _params) do
@@ -60,6 +61,25 @@ defmodule Runeforge.PlayerController do
 
     conn
     |> put_flash(:info, "Player deleted successfully.")
+    |> redirect(to: player_path(conn, :index))
+  end
+
+  def join(conn, %{"player_id" => id}) do
+    player = Repo.get!(Player, id)
+
+    conn
+    |> Runeforge.Auth.login(player)
+    |> put_session(:player, player)
+    |> put_flash(:info, "#{player.name} has joined the session.")
+    |> redirect(to: player_path(conn, :index))
+  end
+
+  def leave(conn, %{"player_id" => id}) do
+    player = Repo.get!(Player, id)
+
+    conn
+    |> delete_session(:player)
+    |> put_flash(:info, "#{player.name} has left the session.")
     |> redirect(to: player_path(conn, :index))
   end
 end
