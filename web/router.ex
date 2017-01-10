@@ -19,7 +19,9 @@ defmodule Runeforge.Router do
 
     get "/", PageController, :index
 
-    resources "/characters", CharacterController
+    resources "/characters", CharacterController do
+      get "/spawn", CharacterController, :spawn, as: :spawn
+    end
 
     resources "/players", PlayerController do
       get "/join", PlayerController, :join, as: :join

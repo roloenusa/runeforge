@@ -1,11 +1,14 @@
 defmodule Runeforge.CharacterController do
+  require Logger
+
   use Runeforge.Web, :controller
 
   alias Runeforge.Character
 
   def index(conn, _params) do
+    player = get_session(conn, :player)
     characters = Repo.all(Character)
-    render(conn, "index.html", characters: characters)
+    render(conn, "index.html", characters: characters, player: player)
   end
 
   def new(conn, _params) do
@@ -60,6 +63,15 @@ defmodule Runeforge.CharacterController do
 
     conn
     |> put_flash(:info, "Character deleted successfully.")
+    |> redirect(to: character_path(conn, :index))
+  end
+
+  def spawn(conn, %{"character_id" => character_id}) do
+    player = get_session(conn, :player)
+    Runeforge.BoardServer.spawn(character_id, player.id)
+
+    conn
+    |> put_flash(:info, "Character spawned.")
     |> redirect(to: character_path(conn, :index))
   end
 end

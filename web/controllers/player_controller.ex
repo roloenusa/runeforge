@@ -67,6 +67,8 @@ defmodule Runeforge.PlayerController do
   def join(conn, %{"player_id" => id}) do
     player = Repo.get!(Player, id)
 
+    :ok = Runeforge.PlayerServer.join(player)
+
     conn
     |> Runeforge.Auth.login(player)
     |> put_session(:player, player)
@@ -76,6 +78,8 @@ defmodule Runeforge.PlayerController do
 
   def leave(conn, %{"player_id" => id}) do
     player = Repo.get!(Player, id)
+
+    :ok = Runeforge.PlayerServer.leave(player)
 
     conn
     |> delete_session(:player)

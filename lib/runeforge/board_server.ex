@@ -15,12 +15,7 @@ defmodule Runeforge.BoardServer do
   # Server implementation
 
   def init([]) do
-    elements = Repo.all(Character)
-      |> Enum.reduce(%{}, fn(character, acc) ->
-          name = character.name
-          id = :crypto.hash(:sha, name) |> Base.encode32
-          Map.put(acc, id, %{character: character, pos: %{x: 0, y: 0}})
-        end)
+    elements = %{}
     {:ok, %{elements: elements}}
   end
 
@@ -32,8 +27,12 @@ defmodule Runeforge.BoardServer do
     GenServer.call(:board_server, {:get})
   end
 
-  def move(payload) do
-    GenServer.call(:board_server, {:move, payload})
+  def move(payload, player_id) do
+    GenServer.call(:board_server, {:move, payload, player_id})
+  end
+
+  def spawn(character_id, owner_id) do
+    GenServer.call(:board_server, {:spawn, character_id, owner_id})
   end
 
   #####
@@ -47,17 +46,26 @@ defmodule Runeforge.BoardServer do
     {:reply, {:ok, elements}, state}
   end
 
-  def handle_call({:move, %{id: id, pos: pos}}, _from, state = %{elements: elements}) do
-
-    response = handle_update_position(elements, id, pos)
+  def handle_call({:move, %{id: id, pos: pos}, player_id}, _from, state = %{elements: elements}) do
+    response = handle_update_position(elements, id, pos, player_id)
     state = case response do
-      :error -> state
-      elements -> state = %{state | elements: elements}
+      {:ok, elements} -> %{state | elements: elements}
+      _ -> state
     end
+    {:reply, response, state}
+  end
 
-    payload = %{name: "System", message: "Player: #{elements[id].character.name} moved to #{Poison.encode! pos}"}
-    Runeforge.Endpoint.broadcast("lobby", "new_message", payload)
+  def handle_call({:spawn, character_id, owner_id}, _from, state = %{elements: elements}) do
+    character = Repo.get!(Character, character_id)
+    id = :crypto.hash(:sha, "#{character.name}-#{:rand.uniform()}") |> Base.encode32
 
+    elements = Map.put(
+      elements,
+      id,
+      %{character: character, pos: %{x: 0, y: 0}, owner: owner_id}
+    )
+
+    state = %{state | elements: elements}
     {:reply, {:ok, elements}, state}
   end
 
@@ -68,36 +76,24 @@ defmodule Runeforge.BoardServer do
   @doc """
   Move the element with ID to the position indicated.
   """
-  def handle_update_position(elements, id, pos) do
-    find_at(elements, pos)
-      |> update_position(elements, id, pos)
+  def handle_update_position(elements, id, pos, player_id) do
+    element = elements[id]
+    case can_update_position?(element, player_id) do
+      :ok ->
+        elements = Map.update!(elements, id, fn(e) -> %{e | pos: pos} end)
+        {:ok, elements}
+      reason -> {:error, reason}
+    end
   end
 
   @doc """
-  Update the position of the elements or return error.
+  Check if the element exists, and belongs to the player.
   """
-  def update_position(:not_found, elements, id, pos) do
-    {_prev, new_elements} = Map.get_and_update(elements, id, fn(element) ->
-      new_element = move_to_tile(element, pos)
-      {element, new_element}
-    end)
-    new_elements
-  end
-  def update_position(element, _e, _id, _pos), do: :error
-
-  @doc """
-  Get the element at the position.
-  """
-  def find_at(elements, pos) do
-    Enum.find(elements, :not_found, fn(element = {_id, %{pos: p}}) ->
-      p == pos
-    end)
-  end
-
-  @doc """
-  Moves the element to the given position.
-  """
-  def move_to_tile(element, pos) do
-    %{element | pos: pos}
+  def can_update_position?(nil, _), do: :not_found
+  def can_update_position?(element, player_id) do
+    case element.owner do
+      ^player_id -> :ok
+      _ -> :not_owner
+    end
   end
 end

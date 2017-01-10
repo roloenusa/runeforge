@@ -1,0 +1,19 @@
+
+
+<%= if  {:player, name, initiative, _} = @player do %>
+    <h2>Welcome <%= name %></h2>
+<% else %>
+    <h2>Join as a player</h2>
+<% end %>
+
+<%= for player = {:player, name, initiative, _} <- @players do %>
+    <div class="row">
+      <div class="col-md-2"><%= name %></div>
+      <div class="col-md-2"><%= initiative %></div>
+    </div>
+<% end %>
+
+<%= form_for @conn, lobby_path(@conn, :join), [as: :player], fn f -> %>
+  <%= text_input f, :name %>
+  <%= submit "Search" %>
+<% end %>

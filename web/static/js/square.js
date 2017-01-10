@@ -51,7 +51,6 @@ class Game extends React.Component {
       .receive("ok", resp => { console.log("Joined successfully", resp) })
       .receive("error", resp => { console.log("Unable to join", resp) })
 
-    channel.on('new_message', payload => this.testFun(payload));
     channel.on("board_state", payload => this.updateGameState(payload));
 
     this.state = {
@@ -140,11 +139,9 @@ class Game extends React.Component {
     );
   }
 
-  testFun(obj) {
-    console.log("testing function: ", obj)
-  }
-
   updateGameState(obj) {
+    console.log("wtf: ", obj)
+
     const cols = this.state.cols;
     const rows = this.state.rows;
     const elements = obj.elements;

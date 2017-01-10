@@ -29,7 +29,6 @@ defmodule Runeforge.PlayerSocket do
         player = Runeforge.Repo.get!(Runeforge.Player, player_id)
         {:ok, assign(socket, :current_player, player)}
       {:error, _reason} ->
-        IO.inspect "======= PEW PEW"
         {:ok, socket}
     end
   end
