@@ -27,6 +27,9 @@ defmodule Runeforge.Router do
       get "/join", PlayerController, :join, as: :join
       get "/leave", PlayerController, :leave, as: :leave
     end
+
+    resources "/lobby", LobbyController
+    post "/lobby/join", LobbyController, :join
   end
 
   # Other scopes may use custom stacks.

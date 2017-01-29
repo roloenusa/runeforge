@@ -1,8 +1,39 @@
+<% {owned, available} = @characters %>
 <%= if @player do %>
   <h2><%= @player.name %></h2>
   <%= link "Leave", to: player_leave_path(@conn, :leave, @player.id) %>
+
+  <h3>Owned</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Hp</th>
+
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+  <%= for character <- owned do %>
+      <tr>
+        <td><%= character.name %></td>
+        <td><%= character.hp %></td>
+
+        <td class="text-right">
+          <%= if @player do %>
+          <%= link "Despawn", to: character_spawn_path(@conn, :spawn, character.id), class: "btn btn-default btn-xs" %>
+          <% end %>
+          <%= link "Show", to: character_path(@conn, :show, character), class: "btn btn-default btn-xs" %>
+          <%= link "Edit", to: character_path(@conn, :edit, character), class: "btn btn-default btn-xs" %>
+          <%= link "Delete", to: character_path(@conn, :delete, character), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+        </td>
+      </tr>
+  <% end %>
+    </tbody>
+  </table>
   <hr />
 <% end %>
+
 
 <h2>Listing characters</h2>
 
@@ -16,7 +47,7 @@
     </tr>
   </thead>
   <tbody>
-<%= for character <- @characters do %>
+<%= for character <- available do %>
     <tr>
       <td><%= character.name %></td>
       <td><%= character.hp %></td>

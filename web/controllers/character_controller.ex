@@ -7,7 +7,27 @@ defmodule Runeforge.CharacterController do
 
   def index(conn, _params) do
     player = get_session(conn, :player)
+    player_id = player.id
+
+    {:ok, owned_list} = Runeforge.BoardServer.get_owned(player.id)
+    owned_list = Enum.reduce(owned_list, [],
+      fn({_, %{character: %{id: id}}}, acc) -> [id | acc]
+        (_, acc) -> acc
+      end
+    )
+
+    IO.inspect "---------------------"
+    IO.inspect owned_list
+
     characters = Repo.all(Character)
+    |> Enum.reduce({[], []},
+      fn(char, {owned, available}) ->
+        case Enum.member?(owned_list, char.id) do
+          true -> {[char | owned], available}
+          _ -> {owned, [char | available]}
+        end
+      end
+    )
     render(conn, "index.html", characters: characters, player: player)
   end
 

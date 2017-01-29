@@ -31,8 +31,12 @@ defmodule Runeforge.BoardServer do
     GenServer.call(:board_server, {:move, payload, player_id})
   end
 
-  def spawn(character_id, owner_id) do
-    GenServer.call(:board_server, {:spawn, character_id, owner_id})
+  def spawn(character_id, player_id) do
+    GenServer.call(:board_server, {:spawn, character_id, player_id})
+  end
+
+  def get_owned(player_id) do
+    GenServer.call(:board_server, {:owned, player_id})
   end
 
   #####
@@ -67,6 +71,15 @@ defmodule Runeforge.BoardServer do
 
     state = %{state | elements: elements}
     {:reply, {:ok, elements}, state}
+  end
+
+  def handle_call({:owned, player_id}, _from, state = %{elements: elements}) do
+    owned = Enum.filter(elements,
+      fn({_, %{owner: ^player_id}}) -> true
+      ({_, _}) -> false end
+    )
+
+    {:reply, {:ok, owned}, state}
   end
 
   #####

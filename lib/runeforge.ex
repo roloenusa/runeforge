@@ -16,7 +16,8 @@ defmodule Runeforge do
       # worker(Runeforge.Worker, [arg1, arg2, arg3]),
 
       # Initialize the board on launch.
-      worker(Runeforge.BoardServer, [[name: :board_server]])
+      worker(Runeforge.BoardServer, [[name: :board_server]]),
+      worker(Runeforge.PlayerServer, [[name: :player_server]])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
