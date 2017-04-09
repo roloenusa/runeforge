@@ -6,15 +6,20 @@ defmodule Runeforge.CharacterController do
   alias Runeforge.Character
 
   def index(conn, _params) do
-    player = get_session(conn, :player)
-    player_id = player.id
+    owned_list = []
+    player = nil
 
-    {:ok, owned_list} = Runeforge.BoardServer.get_owned(player.id)
-    owned_list = Enum.reduce(owned_list, [],
-      fn({_, %{character: %{id: id}}}, acc) -> [id | acc]
-        (_, acc) -> acc
-      end
-    )
+    if @current_player do
+      player = @current_player
+      player_id = @current_player.id
+
+      {:ok, owned_list} = Runeforge.BoardServer.get_owned(player.id)
+      owned_list = Enum.reduce(owned_list, [],
+        fn({_, %{character: %{id: id}}}, acc) -> [id | acc]
+          (_, acc) -> acc
+        end
+      )
+    end
 
     IO.inspect "---------------------"
     IO.inspect owned_list
@@ -28,7 +33,7 @@ defmodule Runeforge.CharacterController do
         end
       end
     )
-    render(conn, "index.html", characters: characters, player: player)
+    render(conn, "index.html", characters: %{}, player: player)
   end
 
   def new(conn, _params) do
@@ -37,16 +42,18 @@ defmodule Runeforge.CharacterController do
   end
 
   def create(conn, %{"character" => character_params}) do
-    changeset = Character.changeset(%Character{}, character_params)
-
-    case Repo.insert(changeset) do
-      {:ok, _character} ->
-        conn
-        |> put_flash(:info, "Character created successfully.")
-        |> redirect(to: character_path(conn, :index))
-      {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset)
-    end
+    # player = get_session(conn, :player)
+    # character_params = %{character_params | :owner}
+    # changeset = Character.changeset(%Character{}, character_params)
+    #
+    # case Repo.insert(changeset) do
+    #   {:ok, _character} ->
+    #     conn
+    #     |> put_flash(:info, "Character created successfully.")
+    #     |> redirect(to: character_path(conn, :index))
+    #   {:error, changeset} ->
+    #     render(conn, "new.html", changeset: changeset)
+    # end
   end
 
   def show(conn, %{"id" => id}) do

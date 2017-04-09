@@ -1,8 +1,3 @@
-<%= if @player do %>
-  <h2><%= @player.name %></h2>
-  <%= link "Leave", to: player_leave_path(@conn, :leave, @player.id) %>
-<% end %>
-
 <h2>Listing players</h2>
 
 <table class="table">
@@ -19,7 +14,7 @@
       <td><%= player.name %></td>
 
       <td class="text-right">
-        <%= unless @player do %>
+        <%= unless @current_player do %>
         <%= link "Join", to: player_join_path(@conn, :join, player.id), class: "btn btn-default btn-xs" %>
         <% end %>
         <%= link "Show", to: player_path(@conn, :show, player), class: "btn btn-default btn-xs" %>

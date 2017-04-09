@@ -1,7 +1,7 @@
 <% {owned, available} = @characters %>
-<%= if @player do %>
-  <h2><%= @player.name %></h2>
-  <%= link "Leave", to: player_leave_path(@conn, :leave, @player.id) %>
+<%= if @current_player do %>
+  <h2><%= @current_player.name %></h2>
+  <%= link "Leave", to: player_leave_path(@conn, :leave, @current_player.id) %>
 
   <h3>Owned</h3>
   <table class="table">
@@ -20,7 +20,7 @@
         <td><%= character.hp %></td>
 
         <td class="text-right">
-          <%= if @player do %>
+          <%= if @current_player do %>
           <%= link "Despawn", to: character_spawn_path(@conn, :spawn, character.id), class: "btn btn-default btn-xs" %>
           <% end %>
           <%= link "Show", to: character_path(@conn, :show, character), class: "btn btn-default btn-xs" %>
@@ -53,7 +53,7 @@
       <td><%= character.hp %></td>
 
       <td class="text-right">
-        <%= if @player do %>
+        <%= if @current_player do %>
         <%= link "Spawn", to: character_spawn_path(@conn, :spawn, character.id), class: "btn btn-default btn-xs" %>
         <% end %>
         <%= link "Show", to: character_path(@conn, :show, character), class: "btn btn-default btn-xs" %>

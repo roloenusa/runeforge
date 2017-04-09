@@ -38,6 +38,8 @@ defmodule Runeforge.Character do
     field :wis, :integer
     field :cha, :integer
 
+    field :owner, :integer
+
     timestamps()
   end
 
@@ -46,7 +48,15 @@ defmodule Runeforge.Character do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :hp, :bloodied, :ac, :fort, :ref, :will, :str, :con, :dex, :int, :wis, :cha])
+    |> cast(params, [:name, :hp, :bloodied, :ac, :fort, :ref, :will, :str, :con, :dex, :int, :wis, :cha, :owner])
     |> validate_required([:name, :hp, :bloodied, :ac, :fort, :ref, :will, :str, :con, :dex, :int, :wis, :cha])
+  end
+
+  def get_by_owner(owner_id) do
+    query = from c in Runeforge.Character,
+          where: c.owner == ^owner_id,
+          select: c
+
+    Runeforge.Repo.all(query)
   end
 end

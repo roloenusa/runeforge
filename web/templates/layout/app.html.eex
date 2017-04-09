@@ -28,22 +28,66 @@
   </head>
 
   <body>
-    <div class="container">
-      <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
-          </ul>
-        </nav>
-        <span class="logo"></span>
-      </header>
+    <div class="container-fluid">
+      <!-- <header class="header"> -->
+      <nav class="navbar navbar-default">
+
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="<%= page_path(@conn, :index) %>">Runeforge</a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav pull-right">
+              <li class="active">
+                <a href="http://www.phoenixframework.org/docs">Get Started</a>
+              </li>
+              <%= if @current_player do %>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                  <%= @current_player.name %> <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><%= link "Home", to: player_path(@conn, :show, @current_player) %></li>
+                  <li><%= link "Logout", to: player_leave_path(@conn, :leave, @current_player.id) %></li>
+                </ul>
+              </li>
+              <% end %>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+      <!-- </header> -->
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div  class="col-md-2">
+          <ul class="list-group">
+            <li  class="list-group-item"><%= link "Home", to: page_path(@conn, :index) %></li>
+            <li  class="list-group-item"><%= link "Players", to: player_path(@conn, :index) %></li>
+            <li  class="list-group-item"><%= link "Characters", to: character_path(@conn, :index) %></li>
+          </ul>
+        </div>
 
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
+        <!-- Main Box -->
+        <div  class="col-md-10">
+          <main role="main">
+            <%= render @view_module, @view_template, assigns %>
+          </main>
+        </div>
+      </div>
 
     </div> <!-- /container -->
     <script>window.userToken = "<%= assigns[:player_token] %>"</script>

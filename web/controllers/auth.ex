@@ -15,6 +15,13 @@ defmodule Runeforge.Auth do
       |> configure_session(renew: true)
   end
 
+  def logout(conn) do
+      conn
+      |> assign(:current_player, nil)
+      |> put_session(:player_id, nil)
+      |> configure_session(renew: false)
+  end
+
   def call(conn, repo) do
     player_id = get_session(conn, :player_id)
 
